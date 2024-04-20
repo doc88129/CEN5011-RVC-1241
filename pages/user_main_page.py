@@ -27,4 +27,4 @@ if col2.button("Add New Food Goal"):
 
 st.write("\n")
 if st.button("Sign Out"):
-    st.switch_page("pages/home_page.py")
+    st.switch_page("home_page.py")

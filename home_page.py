@@ -27,7 +27,8 @@ def verifyLogin(conn, username, password):
     return False
 
 
-def new_user(conn, username, password):
+def new_user():
+    # TODO add user to DB
     pass
 
 
