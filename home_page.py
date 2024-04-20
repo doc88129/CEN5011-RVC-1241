@@ -24,12 +24,6 @@ def verifyLogin(conn, username, password):
             return True
     return False
 
-
-def new_user():
-    # TODO add user to DB
-    pass
-
-
 def showSignInPopup():
     # Create input fields for username and password
     st.markdown("---")
@@ -45,7 +39,6 @@ def showSignInPopup():
             st.session_state.show_login_popup = False  # Hide the popup
         else:
             st.error('Invalid username or password')
-
 
 def showSignUpPopup():
     st.markdown("---")
@@ -78,9 +71,6 @@ def showSignUpPopup():
             st.warning('Username already exists!')
         else:
             st.warning('Account using the provided email already exists!')
-
-    # TODO - info validation
-    # TODO - create user in DB
 
 def check_username(db, username):
     cursor = db.cursor()
