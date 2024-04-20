@@ -2,8 +2,7 @@ import streamlit as st
 import mysql.connector
 from passlib.hash import pbkdf2_sha256
 
-# Initialize SQLite connection
-
+#Connect to database
 mydb = mysql.connector.connect(
     host="localhost",
     user="scrape",
@@ -11,6 +10,9 @@ mydb = mysql.connector.connect(
     database="fooddb"
 )
 
+class SessionState:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
 def verifyLogin(conn, username, password):
     cursor = conn.cursor()
@@ -94,16 +96,22 @@ def checkEmail(db, email):
 # Function to add a new user
 def add_user(conn, username, password, email, height, weight, age, gender):
 
-    hashed_password = pbkdf2_sha256.hash(password)
+    hashedPassword = pbkdf2_sha256.hash(password)
     cursor = conn.cursor()
     cursor.execute("SELECT MAX(user_id) FROM user")
     id = cursor.fetchone()[0] + 1
 
-    cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashed_password, email, height, weight, age, gender))
+    cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashedPassword, email, height, weight, age, gender))
     conn.commit()
+    state.userId = id
+    state.username = username
+
+    print(state.userId)
 
 if __name__ == "__main__":
     st.title("Calorie Scraper")
+
+    state = SessionState(userId=None, username=None)
 
     if st.button("Login"):
         st.session_state.show_signup_popup = False
