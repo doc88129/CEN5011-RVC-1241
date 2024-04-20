@@ -4,5 +4,7 @@ if __name__ == "__main__":
     st.title("Calorie Scraper")
     st.markdown("---")
 
-    st.page_link("pages/login_page.py", label="Login", use_container_width=True)
-    st.page_link("pages/sign_up_page.py", label="Sign Up", use_container_width=True)
+    if st.button("Login"):
+        st.switch_page("pages/login_page.py")
+    if st.button("Logout"):
+        st.switch_page("pages/sign_up_page.py")

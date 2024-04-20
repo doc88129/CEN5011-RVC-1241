@@ -20,6 +20,7 @@ def scrape_website(url):
             # Find all text within the <table> element
             table_text = table.get_text(separator='\n', strip=True)
 
+            # TODO - add food item to user database
             # Print the text
             print(table_text)
             print()  # Add an empty line for better readability
