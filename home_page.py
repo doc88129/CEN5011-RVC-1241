@@ -20,8 +20,6 @@ def verifyLogin(conn, username, password):
 
     row = cursor.fetchone()
 
-    print(row[3])
-
     if row:
         hashedPassword = row[3]
         if pbkdf2_sha256.verify(password, hashedPassword):
@@ -35,7 +33,9 @@ def showSignInPopup():
 
     # Create a button to submit the sign-in credentials
     if st.button('Sign In'):
-        if verifyLogin(mydb, username, password):
+        if not(username) or not(password):
+            st.error('Missing username or password')
+        elif verifyLogin(mydb, username, password):
             st.success('Login successful!')
             st.session_state.show_login_popup = False  # Hide the popup
         else:
