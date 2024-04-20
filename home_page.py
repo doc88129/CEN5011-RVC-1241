@@ -4,7 +4,7 @@ from passlib.hash import pbkdf2_sha256
 
 #Connect to database
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="192.168.56.1",
     user="scrape",
     password="password",
     database="fooddb"
@@ -27,18 +27,18 @@ def verifyLogin(conn, username, password):
     return False
 
 def showSignInPopup():
-    # Create input fields for username and password
+
     st.markdown("---")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
-    # Create a button to submit the sign-in credentials
+
     if st.button('Sign In'):
         if not(username) or not(password):
             st.error('Missing username or password')
         elif verifyLogin(mydb, username, password):
             st.success('Login successful!')
-            st.session_state.show_login_popup = False  # Hide the popup
+            st.session_state.show_login_popup = False
         else:
             st.error('Invalid username or password')
 
