@@ -54,7 +54,7 @@ def showSignUpPopup():
     weight = st.number_input("Weight (lb)", min_value=1, max_value=500, step=1)
     col1, col2 = st.columns(2)
     height1 = col1.number_input("Height (ft)", min_value=1, max_value=10, step=1, value=5)
-    height2 = col2.number_input("Height (in)", min_value=1, max_value=12, step=1, value=8)
+    height2 = col2.number_input("Height (in)", min_value=1, max_value=11, step=1, value=8)
 
     if st.button('Create Account'):
         uExist = check_username(mydb, newUsername)
@@ -65,7 +65,8 @@ def showSignUpPopup():
         elif not(newPassword == verifyPass):
             st.error('Passwords do not match')
         elif not (uExist) and not (eExist):
-            add_user(mydb, newUsername, newPassword, newEmail)
+            height = (height1*12) + height2
+            add_user(mydb, newUsername, newPassword, newEmail, height, weight, age, gender)
             st.success('Account created successfully!')
         elif uExist:
             st.warning('Username already exists!')
@@ -91,15 +92,14 @@ def checkEmail(db, email):
         return False
 
 # Function to add a new user
-def add_user(conn, username, password, email):
-
+def add_user(conn, username, password, email, height, weight, age, gender):
 
     hashed_password = pbkdf2_sha256.hash(password)
     cursor = conn.cursor()
     cursor.execute("SELECT MAX(user_id) FROM user")
     id = cursor.fetchone()[0] + 1
 
-    cursor.execute("INSERT INTO user (user_id, username, password, email) VALUES (%s, %s, %s, %s)", (id, username, hashed_password, email))
+    cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashed_password, email, height, weight, age, gender))
     conn.commit()
 
 if __name__ == "__main__":
