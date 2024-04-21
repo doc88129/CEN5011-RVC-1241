@@ -48,12 +48,16 @@ def get_user_historical_data(conn, user_id):
 def log_food_item(conn, user_id, food_item_info):
     try:
         cursor = conn.cursor()
-        meal_id = cursor.execute("""
+        cursor.execute("""
             INSERT INTO Meal (meal_name, meal_type, calories, protein, carbs, fat, date_consumed) 
             VALUES (%s, %s, %s, %s, %s, %s, NOW())""",
                        (food_item_info['meal_name'], food_item_info['meal_type'],
                         food_item_info['calories'], food_item_info['protein'], 
                         food_item_info['carbs'], food_item_info['fat']))
+        
+        # Fetch the last inserted meal_id
+        meal_id = cursor.lastrowid
+
         cursor.execute("""
             INSERT INTO User_Meal (user_id, meal_id) VALUES (%s, %s)""",
                        (user_id, meal_id))
