@@ -1,19 +1,13 @@
 import streamlit as st
 import mysql.connector
+import db_utils
 from passlib.hash import pbkdf2_sha256
 
 #Persisting User
 import session_state
 
-#Connect to database
-mydb = mysql.connector.connect(
-    host="localhost",
-    #port ="3306",
-    user="root",
-    password="password",
-    database="fooddb"
-)
-
+# Use the connect_to_db function
+conn = db_utils.connect_to_db()
 
 def verifyLogin(conn, username, password):
 
