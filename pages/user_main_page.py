@@ -77,18 +77,6 @@ if st.session_state.conn:
             goal_info['target_fat_per_day'] = st.number_input("Target Fat per Day", value=0, step=1)
             goal_info['end_date'] = st.date_input("End Date")
 
-<<<<<<< HEAD
-            # Insert the new food goal into the database
-            try:
-                db_utils.log_new_food_goal(st.session_state.conn, st.session_state.userID, goal_info)
-                st.success("New food goal added successfully!")
-            except Error as e:
-                st.error("Failed to add new food goal. Please try again later.")
-
-        else:
-            st.error("Failed to retrieve user information. Please try again later.")
-
-=======
             st.write("\n")
             options = row([4, 4], vertical_align="bottom")
             if options.button("Add New Food Item to Meal", key="button3"):
@@ -100,7 +88,6 @@ if st.session_state.conn:
 
     else:
         st.error("Failed to retrieve user information. Please try again later.")
->>>>>>> cbe6d21b5a189ad75ecb332bcf5b0a6ea767fb9b
 
     st.write("\n")
     if st.button("Sign Out"):
