@@ -33,8 +33,7 @@ def calculate_target_nutrition(weight, target_weight, goal_type):
     
     return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
 
-
-st.title("Welcome...")
+st.title(f"Welcome to {session_state.st.session_state.username}'s Diet Tracker")
 
 if st.session_state.conn:
     # Retrieve user information from the database

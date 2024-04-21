@@ -147,6 +147,14 @@ def add_user(conn, username, password, email, height, weight, age, gender):
     session_state.st.session_state.username = username
 
     print(session_state.st.session_state.username)
+
+def add_message(conn, username, title, content):
+
+    cursor = conn.cursor()
+
+    # Execute INSERT query to add the new user
+    cursor.execute("INSERT INTO message (username, title, content) VALUES (%s, %s, %s)", (username, title, content))
+    conn.commit()
     
 def verifyLogin(conn, username, password):
     cursor = conn.cursor()
