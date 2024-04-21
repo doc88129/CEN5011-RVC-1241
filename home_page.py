@@ -6,8 +6,20 @@ from passlib.hash import pbkdf2_sha256
 #Persisting User
 import session_state
 
+<<<<<<< HEAD
 # Use the connect_to_db function
 conn = db_utils.connect_to_db()
+=======
+#Connect to database
+mydb = mysql.connector.connect(
+    host="localhost",
+    #port ="3306",
+    user="scrape",
+    password="password",
+    database="fooddb"
+)
+
+>>>>>>> origin/main
 
 def verifyLogin(conn, username, password):
 
@@ -19,6 +31,14 @@ def verifyLogin(conn, username, password):
     if row:
         hashedPassword = row[3]
         if pbkdf2_sha256.verify(password, hashedPassword):
+            cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+
+            new_user_id = cursor.fetchone()[0]
+
+            # Set session state
+            session_state.st.session_state.userID = new_user_id
+            session_state.st.session_state.username = username
+            print(session_state.st.session_state.userID)
             return True
     return False
 
@@ -100,7 +120,9 @@ def add_user(conn, username, password, email, height, weight, age, gender):
     conn.commit()
 
     # Retrieve the auto-generated user_id
-    new_user_id = cursor.lastrowid
+    cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+
+    new_user_id = cursor.fetchone()[0]
 
     # Set session state
     session_state.st.session_state.userID = new_user_id
