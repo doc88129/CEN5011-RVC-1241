@@ -31,8 +31,8 @@ if st.session_state.conn:
         st.subheader("Food Goals")
         user_food_goals = db_utils.get_user_food_goals(st.session_state.conn, st.session_state.userID)
         if user_food_goals:
-            for i, goal in enumerate(user_food_goals, start=1):
-                keys = list(goal.keys())
+            for i, goal in enumerate(user_ood_goals, start=1):
+                keys = list(goal.keys())f
                 for index, key in enumerate(keys):
                     words = key.split("_")
                     for j, word in enumerate(words):
@@ -55,18 +55,10 @@ if st.session_state.conn:
         else:
             st.write("No food goals found for the user.")
 
-        # Update user graph based on historical data
-        st.write("\n")
-        user_historical_data = db_utils.get_user_historical_data(st.session_state.conn, st.session_state.userID)
-        chart_data = pd.DataFrame(user_historical_data, columns=["date_consumed", "calories", "protein", "carbs", "fat"])
-        st.line_chart(chart_data.set_index('date_consumed'))
-        st.markdown("---")
-
         options = row([4, 4], vertical_align="bottom")
 
         if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
-
         # Add new food goal section
         if not st.session_state.open:
             if options.button("Add New Food Goal", key="button2"):
