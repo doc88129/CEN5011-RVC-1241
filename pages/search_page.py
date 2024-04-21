@@ -34,6 +34,8 @@ def scrape_website(url):
         }
 
         db_utils.log_food_item(st.session_state.conn, st.session_state.userID, food_item_info)
+        st.success(f"{food_item_info['meal_name']} was added to today's Meal")
+
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 
@@ -41,6 +43,9 @@ def scrape_website(url):
 st.title(f"{session_state.st.session_state.username}'s Diet Tracker")
 
 search = st.text_input("Enter a food item")
+if st.button("Return"):
+    st.switch_page("pages/user_main_page.py")
+st.markdown("---")
 
 response = requests.get(f"https://www.myfooddata.com/search?search={search}")
 soup = BeautifulSoup(response.content, 'html.parser')
