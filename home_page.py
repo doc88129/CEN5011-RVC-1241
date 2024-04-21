@@ -101,7 +101,11 @@ def add_user(conn, username, password, email, height, weight, age, gender):
     hashedPassword = pbkdf2_sha256.hash(password)
     cursor = conn.cursor()
     cursor.execute("SELECT MAX(user_id) FROM user")
-    id = cursor.fetchone()[0] + 1
+    prevId = cursor.fetchone()[0]
+    if prevId == None:
+        prevId = 0
+    id = prevId + 1
+
 
     cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashedPassword, email, height, weight, age, gender))
     conn.commit()
