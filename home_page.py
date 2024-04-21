@@ -6,20 +6,8 @@ from passlib.hash import pbkdf2_sha256
 #Persisting User
 import session_state
 
-<<<<<<< HEAD
 # Use the connect_to_db function
 conn = db_utils.connect_to_db()
-=======
-#Connect to database
-mydb = mysql.connector.connect(
-    host="localhost",
-    #port ="3306",
-    user="scrape",
-    password="password",
-    database="fooddb"
-)
-
->>>>>>> origin/main
 
 def verifyLogin(conn, username, password):
 
