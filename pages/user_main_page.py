@@ -12,21 +12,27 @@ import session_state
 
 # Function to calculate target nutritional values based on user's weight and goal
 def calculate_target_nutrition(weight, target_weight, goal_type):
+    # Constants based on average human metabolism and nutritional guidelines
+    CALORIES_PER_POUND = 3500  # Number of calories per pound of body weight
+    PROTEIN_RATIO = 0.15  # Percentage of total daily calories from protein
+    CARBS_RATIO = 0.5  # Percentage of total daily calories from carbohydrates
+    FAT_RATIO = 0.35  # Percentage of total daily calories from fat
+    
     # Calculate target calories based on the goal type (e.g., weight loss, weight gain, maintenance)
     if goal_type == "Weight Loss":
-        target_calories_per_day = weight * 10  # Example formula, you can adjust it based on your requirements
+        target_calories_per_day = weight * CALORIES_PER_POUND * 0.8  # Aim for a calorie deficit
     elif goal_type == "Weight Gain":
-        target_calories_per_day = weight * 15  # Example formula, you can adjust it based on your requirements
+        target_calories_per_day = weight * CALORIES_PER_POUND * 1.2  # Aim for a calorie surplus
     else:
-        target_calories_per_day = weight * 12  # Example formula, you can adjust it based on your requirements
+        target_calories_per_day = weight * CALORIES_PER_POUND  # Maintain current weight
     
     # Calculate target protein, carbs, and fat based on the user's weight and target weight
-    # Example formulas, you can adjust them based on your requirements
-    target_protein_per_day = target_weight * 0.8
-    target_carbs_per_day = target_weight * 2
-    target_fat_per_day = target_weight * 0.4
+    target_protein_per_day = target_weight * PROTEIN_RATIO
+    target_carbs_per_day = target_weight * CARBS_RATIO
+    target_fat_per_day = target_weight * FAT_RATIO
     
     return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
+
 
 st.title("Welcome...")
 
