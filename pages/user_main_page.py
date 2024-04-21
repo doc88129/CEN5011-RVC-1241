@@ -46,11 +46,15 @@ if st.session_state.conn:
                     new[columns[attribute]] = value
 
                 st.dataframe(new, width=1000)
-                if st.button("Delete Goal"):
+                if st.button(f"Delete Goal {goal['goal_id']}"):
                     db_utils.delete_user_food_goal(st.session_state.conn, st.session_state.userID, goal['goal_id'])
                     st.success("Goal deleted successfully!")
+                    # Refresh the page to reflect the updated goals
+                    st.experimental_rerun()
         else:
             st.write("No food goals found for the user.")
+
+
 
         # Update user graph based on historical data
         st.write("\n")
@@ -79,7 +83,7 @@ if st.session_state.conn:
 
             st.write("\n")
             options = row([4, 4], vertical_align="bottom")
-            if options.button("Add New Food Item to Meal", key="button3"):
+            if options.button("Apply", key="button3"):
                 db_utils.log_new_food_goal(st.session_state.conn, st.session_state.userID, goal_info)
                 st.session_state.open = False
             if options.button("Cancel", key="button4"):
