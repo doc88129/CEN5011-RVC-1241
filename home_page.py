@@ -8,7 +8,6 @@ import session_state
 # Use the connect_to_db function
 conn = db_utils.connect_to_db()
 
-
 def showSignInPopup():
 
     st.markdown("---")
@@ -57,7 +56,6 @@ def showSignUpPopup():
             st.warning('Username already exists!')
         else:
             st.warning('Account using the provided email already exists!')
-
 
 
 if __name__ == "__main__":

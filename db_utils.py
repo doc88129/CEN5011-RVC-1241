@@ -65,7 +65,6 @@ def get_user_food_goals(conn, user_id):
         user_food_goals = cursor.fetchall()
         return user_food_goals
     except Error as e:
-<<<<<<< HEAD
         print(e)
         
 def check_username(db, username):
@@ -128,6 +127,3 @@ def verifyLogin(conn, username, password):
             return True
     return False
     
-=======
-        print(e)
->>>>>>> 179c78a (Added new db functions and logging food goal functionality)
