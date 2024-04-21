@@ -9,7 +9,7 @@ import session_state
 mydb = mysql.connector.connect(
     host="localhost",
     #port ="3306",
-    user="root",
+    user="scrape",
     password="password",
     database="fooddb"
 )
@@ -25,6 +25,14 @@ def verifyLogin(conn, username, password):
     if row:
         hashedPassword = row[3]
         if pbkdf2_sha256.verify(password, hashedPassword):
+            cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+
+            new_user_id = cursor.fetchone()[0]
+
+            # Set session state
+            session_state.st.session_state.userID = new_user_id
+            session_state.st.session_state.username = username
+            print(session_state.st.session_state.userID)
             return True
     return False
 
@@ -106,7 +114,9 @@ def add_user(conn, username, password, email, height, weight, age, gender):
     conn.commit()
 
     # Retrieve the auto-generated user_id
-    new_user_id = cursor.lastrowid
+    cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+
+    new_user_id = cursor.fetchone()[0]
 
     # Set session state
     session_state.st.session_state.userID = new_user_id
