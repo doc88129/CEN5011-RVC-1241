@@ -92,6 +92,17 @@ def get_user_food_goals(conn, user_id):
     except Error as e:
         print(e)
 
+def delete_user_food_goal(conn, user_id, goal_id):
+    try:
+        cursor = conn.cursor()
+        # First, delete the entry from the User_Goal table
+        cursor.execute("DELETE FROM User_Goal WHERE user_id = %s AND goal_id = %s", (user_id, goal_id))
+        # Then, delete the corresponding goal from the Goal table
+        cursor.execute("DELETE FROM Goal WHERE goal_id = %s", (goal_id,))
+        conn.commit()
+        print("Goal deleted successfully")
+    except Error as e:
+        print(e)
 
         
 def check_username(db, username):
