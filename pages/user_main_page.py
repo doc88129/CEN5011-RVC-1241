@@ -15,7 +15,7 @@ st.title("Welcome...")
 
 if st.session_state.conn:
     # Retrieve user information from the database
-    user_info = db_utils.get_user_info(st.session_state.conn, session_state.st.session_state.userID)
+    user_info = db_utils.get_user_info(st.session_state.conn, st.session_state.userID)
 
     if user_info is not None:  # Check if user_info is not None
         # Display user metrics
@@ -29,7 +29,7 @@ if st.session_state.conn:
         # Display user food goals
         st.write("\n")
         st.subheader("Food Goals")
-        user_food_goals = db_utils.get_user_food_goals(st.session_state.conn, session_state.st.session_state.userID)
+        user_food_goals = db_utils.get_user_food_goals(st.session_state.conn, st.session_state.userID)
         if user_food_goals:
             for goal in user_food_goals:
                 st.write(f"- **Goal Type:** {goal['goal_type']}")
@@ -44,7 +44,7 @@ if st.session_state.conn:
 
         # Update user graph based on historical data
         st.write("\n")
-        user_historical_data = db_utils.get_user_historical_data(st.session_state.conn, session_state.st.session_state.userID)
+        user_historical_data = db_utils.get_user_historical_data(st.session_state.conn, st.session_state.userID)
         chart_data = pd.DataFrame(user_historical_data, columns=["date_consumed", "calories", "protein", "carbs", "fat"])
         st.line_chart(chart_data.set_index('date_consumed'))
 
@@ -69,10 +69,8 @@ if st.session_state.conn:
 
     st.write("\n")
     if st.button("Sign Out"):
+        st.session_state.clear()
         st.switch_page("home_page.py")
 else:
     st.error("Failed to connect to the database. Please try again later.")
 
-# Close the database connection
-if st.session_state.conn:
-    st.session_state.conn.close()

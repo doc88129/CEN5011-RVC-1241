@@ -8,6 +8,8 @@ import session_state
 # Connect to the database once at the start of the application
 if 'conn' not in st.session_state:
     st.session_state.conn = db_utils.connect_to_db()
+    
+
 
 def showSignInPopup():
 
