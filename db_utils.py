@@ -45,13 +45,13 @@ def get_user_historical_data(conn, user_id):
 
 
 # Function to log food item to meal in the database
-def log_food_item(conn, user_id, meal_id, food_item_info):
+def log_food_item(conn, user_id, food_item_info):
     try:
         cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO Meal (meal_id, meal_name, meal_type, calories, protein, carbs, fat, date_consumed) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())""",
-                       (meal_id, food_item_info['meal_name'], food_item_info['meal_type'], 
+        meal_id = cursor.execute("""
+            INSERT INTO Meal (meal_name, meal_type, calories, protein, carbs, fat, date_consumed) 
+            VALUES (%s, %s, %s, %s, %s, %s, NOW())""",
+                       (food_item_info['meal_name'], food_item_info['meal_type'],
                         food_item_info['calories'], food_item_info['protein'], 
                         food_item_info['carbs'], food_item_info['fat']))
         cursor.execute("""

@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
+import db_utils
 
 #Persisting User
 import session_state
@@ -16,16 +17,23 @@ def scrape_website(url):
 
         # Find all <table> elements
         table_elements = soup.find('table')
+        calories = table_elements.find('td', class_='nft-cal-amt ENERC_KCAL').text
+        fat = table_elements.find('span', class_='FAT').text
+        protein = table_elements.find('span', class_='PROCNT').text
+        carbs = table_elements.find('span', class_='CHOCDF').text
 
-        # Iterate over each <table> element
-        for table in table_elements:
-            # Find all text within the <table> element
-            table_text = table.get_text(separator='\n', strip=True)
+        name = soup.find('h1', class_='nutritionFactsTitle').text
 
-            # TODO - add food item to user database
-            # Print the text
-            print(table_text)
-            #print()  # Add an empty line for better readability
+        food_item_info = {
+            'meal_name': name,
+            'meal_type': name,
+            'calories': int(''.join(c for c in calories if c.isdigit())),
+            'protein': int(''.join(c for c in protein if c.isdigit())),
+            'carbs': int(''.join(c for c in carbs if c.isdigit())),
+            'fat': int(''.join(c for c in fat if c.isdigit()))
+        }
+
+        db_utils.log_food_item(st.session_state.conn, st.session_state.userID, food_item_info)
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 
