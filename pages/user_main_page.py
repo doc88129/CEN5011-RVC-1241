@@ -10,6 +10,24 @@ from mysql.connector import Error
 # Persisting User
 import session_state
 
+# Function to calculate target nutritional values based on user's weight and goal
+def calculate_target_nutrition(weight, target_weight, goal_type):
+    # Calculate target calories based on the goal type (e.g., weight loss, weight gain, maintenance)
+    if goal_type == "Weight Loss":
+        target_calories_per_day = weight * 10  # Example formula, you can adjust it based on your requirements
+    elif goal_type == "Weight Gain":
+        target_calories_per_day = weight * 15  # Example formula, you can adjust it based on your requirements
+    else:
+        target_calories_per_day = weight * 12  # Example formula, you can adjust it based on your requirements
+    
+    # Calculate target protein, carbs, and fat based on the user's weight and target weight
+    # Example formulas, you can adjust them based on your requirements
+    target_protein_per_day = target_weight * 0.8
+    target_carbs_per_day = target_weight * 2
+    target_fat_per_day = target_weight * 0.4
+    
+    return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
+
 st.title("Welcome...")
 
 if st.session_state.conn:
@@ -69,10 +87,18 @@ if st.session_state.conn:
             goal_info = {}  # Example goal information, you can change this
             goal_info['goal_type'] = st.selectbox("Goal Type", ["Weight Loss", "Weight Gain", "Maintenance"])
             goal_info['target_weight'] = st.number_input("Target Weight", value=0.0, step=0.1)
-            goal_info['target_calories_per_day'] = st.number_input("Target Calories per Day", value=0, step=1)
-            goal_info['target_protein_per_day'] = st.number_input("Target Protein per Day", value=0, step=1)
-            goal_info['target_carbs_per_day'] = st.number_input("Target Carbs per Day", value=0, step=1)
-            goal_info['target_fat_per_day'] = st.number_input("Target Fat per Day", value=0, step=1)
+
+            # Calculate target nutritional values based on the user's weight and goal
+            target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day = calculate_target_nutrition(
+                float(user_info['weight']), goal_info['target_weight'], goal_info['goal_type']
+            )
+
+            # Populate the target nutritional values fields
+            goal_info['target_calories_per_day'] = target_calories_per_day
+            goal_info['target_protein_per_day'] = target_protein_per_day
+            goal_info['target_carbs_per_day'] = target_carbs_per_day
+            goal_info['target_fat_per_day'] = target_fat_per_day
+
             goal_info['end_date'] = st.date_input("End Date")
 
             st.write("\n")
