@@ -31,8 +31,8 @@ if st.session_state.conn:
         st.subheader("Food Goals")
         user_food_goals = db_utils.get_user_food_goals(st.session_state.conn, st.session_state.userID)
         if user_food_goals:
-            for i, goal in enumerate(user_ood_goals, start=1):
-                keys = list(goal.keys())f
+            for i, goal in enumerate(user_food_goals, start=1):
+                keys = list(goal.keys())
                 for index, key in enumerate(keys):
                     words = key.split("_")
                     for j, word in enumerate(words):
