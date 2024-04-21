@@ -12,7 +12,6 @@ import session_state
 
 st.title("Welcome...")
 
-
 if st.session_state.conn:
     # Retrieve user information from the database
     user_info = db_utils.get_user_info(st.session_state.conn, st.session_state.userID)
@@ -32,12 +31,12 @@ if st.session_state.conn:
         st.subheader("Food Goals")
         user_food_goals = db_utils.get_user_food_goals(st.session_state.conn, st.session_state.userID)
         if user_food_goals:
-            for goal in user_food_goals:
+            for i, goal in enumerate(user_food_goals, start=1):
                 keys = list(goal.keys())
                 for index, key in enumerate(keys):
                     words = key.split("_")
-                    for i, word in enumerate(words):
-                        words[i] = word.capitalize()
+                    for j, word in enumerate(words):
+                        words[j] = word.capitalize()
                     words = " ".join(words)
                     keys[index] = words
                 columns = dict(zip(goal.keys(), keys))
@@ -45,16 +44,16 @@ if st.session_state.conn:
                 for attribute, value in goal.items():
                     new[columns[attribute]] = value
 
+                del new['Goal Id']
                 st.dataframe(new, width=1000)
-                if st.button(f"Delete Goal {goal['goal_id']}"):
-                    db_utils.delete_user_food_goal(st.session_state.conn, st.session_state.userID, goal['goal_id'])
+                goal_id = goal['goal_id']
+                if st.button(f"Delete Goal {i}", key=f"delete_goal_{goal_id}"):
+                    db_utils.delete_user_food_goal(st.session_state.conn, st.session_state.userID, goal_id)
                     st.success("Goal deleted successfully!")
                     # Refresh the page to reflect the updated goals
                     st.experimental_rerun()
         else:
             st.write("No food goals found for the user.")
-
-
 
         # Update user graph based on historical data
         st.write("\n")
@@ -67,8 +66,11 @@ if st.session_state.conn:
 
         if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
-        if options.button("Add New Food Goal", key="button2") and not st.session_state.open:
-            st.session_state.open = True
+
+        # Add new food goal section
+        if not st.session_state.open:
+            if options.button("Add New Food Goal", key="button2"):
+                st.session_state.open = True
 
         if st.session_state.open:
             st.subheader("New Food Goal")
@@ -86,18 +88,19 @@ if st.session_state.conn:
             if options.button("Apply", key="button3"):
                 db_utils.log_new_food_goal(st.session_state.conn, st.session_state.userID, goal_info)
                 st.session_state.open = False
+                # Refresh the page to reflect the updated goals
+                st.experimental_rerun()
             if options.button("Cancel", key="button4"):
                 st.session_state.open = False
+                # Refresh the page to reflect the updated goals
+                st.experimental_rerun()
             st.markdown("---")
 
+        st.write("\n")
+        if st.button("Sign Out"):
+            st.session_state.clear()
+            st.switch_page("home_page.py")
     else:
         st.error("Failed to retrieve user information. Please try again later.")
-
-    st.write("\n")
-    if st.button("Sign Out"):
-        st.session_state.clear()
-        st.switch_page("home_page.py")
 else:
     st.error("Failed to connect to the database. Please try again later.")
-
-
