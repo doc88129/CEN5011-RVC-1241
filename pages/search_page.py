@@ -25,7 +25,7 @@ def scrape_website(url):
             # TODO - add food item to user database
             # Print the text
             print(table_text)
-            print()  # Add an empty line for better readability
+            #print()  # Add an empty line for better readability
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 

@@ -1,6 +1,6 @@
 import streamlit as st
-import mysql.connector
 import db_utils
+import time
 
 #Persisting User
 import session_state
@@ -24,6 +24,8 @@ def showSignInPopup():
         elif db_utils.verifyLogin(st.session_state.conn, username, password):
             st.success('Login successful!')
             st.session_state.show_login_popup = False
+            time.sleep(1)
+            st.switch_page("pages/user_main_page.py")
         else:
             st.error('Invalid username or password')
 
