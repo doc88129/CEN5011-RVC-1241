@@ -22,7 +22,7 @@ def connect_to_db():
 def get_user_info(conn, user_id):
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM User WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT * FROM user WHERE user_id = %s", (user_id,))
         user_info = cursor.fetchone()
         return user_info
     except Error as e:
@@ -32,7 +32,7 @@ def get_user_info(conn, user_id):
 def get_user_historical_data(conn, user_id):
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Meal WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT * FROM meal WHERE user_id = %s", (user_id,))
         meal_data = cursor.fetchall()
         return meal_data
     except Error as e:
@@ -42,7 +42,7 @@ def get_user_historical_data(conn, user_id):
 def log_food_item(conn, user_id, meal_id, food_item_info):
     try:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Meal (user_id, meal_id, meal_name, meal_type, calories, protein, carbs, fat, date_consumed) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW())", 
+        cursor.execute("INSERT INTO meal (user_id, meal_id, meal_name, meal_type, calories, protein, carbs, fat, date_consumed) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW())",
                        (user_id, meal_id, food_item_info['meal_name'], food_item_info['meal_type'], food_item_info['calories'], food_item_info['protein'], food_item_info['carbs'], food_item_info['fat']))
         conn.commit()
     except Error as e:
@@ -52,7 +52,7 @@ def log_food_item(conn, user_id, meal_id, food_item_info):
 def log_new_food_goal(conn, user_id, goal_info):
     try:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Goal (user_id, goal_type, target_weight, target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), %s)", 
+        cursor.execute("INSERT INTO goal (user_id, goal_type, target_weight, target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), %s)",
                        (user_id, goal_info['goal_type'], goal_info['target_weight'], goal_info['target_calories_per_day'], goal_info['target_protein_per_day'], goal_info['target_carbs_per_day'], goal_info['target_fat_per_day'], goal_info['end_date']))
         conn.commit()
     except Error as e:
@@ -61,7 +61,7 @@ def log_new_food_goal(conn, user_id, goal_info):
 def get_user_food_goals(conn, user_id):
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Goal WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT * FROM goal WHERE user_id = %s", (user_id,))
         user_food_goals = cursor.fetchall()
         return user_food_goals
     except Error as e:

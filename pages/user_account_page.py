@@ -12,6 +12,14 @@ from streamlit_extras.row import row
 #Persisting User
 import session_state
 
+def retrieveUserInfo(conn):
+    id = session_state.st.session_state.userID
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM user WHERE user_id=%s", (id,))
+
+    row = cursor.fetchone()
+    return row
+
 conn = db_utils.connect_to_db()
 
 if session_state.st.session_state.username == None:
@@ -19,14 +27,14 @@ if session_state.st.session_state.username == None:
 else:
     st.title(f"{session_state.st.session_state.username}'s Profile")
 
+    info = retrieveUserInfo(conn)
 
-
-st.write('User Information')
-st.write(f'Email')
-# st.write(f'Gender: {}')
-# st.write(f'Age: {}')
-# st.write(f'Height: {}')
-# st.write(f'Weight: {}')
+    st.write('User Information')
+    st.write(f'Email')
+    st.write(f'Gender: {info[7]}')
+    st.write(f'Age: {info[6]}')
+    st.write(f'Height: {info[4]}')
+    st.write(f'Weight: {info[5]}')
 
 
 # Display delete account button
@@ -36,8 +44,8 @@ if not session_state.st.session_state.deleteConfirmation and st.button("Delete A
 # Display warning and confirmation buttons if delete confirmation is True
 if session_state.st.session_state.deleteConfirmation:
     st.warning("Are you sure you want to delete your account? This action cannot be undone.")
-    row2 = row([2, 4], vertical_align="bottom")
-    if row2.button("Yes, delete my account"):
+    options = row([2, 4], vertical_align="bottom")
+    if options.button("Yes, delete my account"):
         print(session_state.st.session_state.userID)
         cursor = conn.cursor()
         cursor.execute("DELETE FROM user WHERE username=%s", (session_state.st.session_state.username,))
@@ -46,6 +54,6 @@ if session_state.st.session_state.deleteConfirmation:
         session_state.st.session_state.username = None
         session_state.st.session_state.deleteConfirmation = False
         switch_page("home_page")
-    elif row2.button("Cancel"):
+    elif options.button("Cancel"):
         session_state.st.session_state.deleteConfirmation = False
         switch_page("user_account_page")

@@ -3,6 +3,7 @@ import pandas as pd
 import db_utils
 import streamlit as st
 from streamlit_extras.stateful_button import button
+from streamlit_extras.row import row
 import mysql.connector
 from mysql.connector import Error
 
@@ -49,10 +50,13 @@ if conn:
         chart_data = pd.DataFrame(user_historical_data, columns=["date_consumed", "calories", "protein", "carbs", "fat"])
         st.line_chart(chart_data.set_index('date_consumed'))
 
-        col1, col2 = st.columns(2)
-        if col1.button("Add Food Item to Meal"):
+        options = row([4, 4], vertical_align="bottom")
+
+        if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
-        if col2.button("Add New Food Goal"):
+        if options.button("Add New Food Goal", key="button2") and not st.session_state.open:
+            st.session_state.open = True
+        if st.session_state.open:
             goal_info = {}  # Example goal information, you can change this
             goal_info['goal_type'] = st.selectbox("Goal Type", ["Weight Loss", "Weight Gain", "Maintenance"])
             goal_info['target_weight'] = st.number_input("Target Weight", value=0.0, step=0.1)

@@ -5,3 +5,4 @@ def init():
         st.session_state.userID = None
         st.session_state.username = None
         st.session_state.deleteConfirmation = False
+        st.session_state.open = False
