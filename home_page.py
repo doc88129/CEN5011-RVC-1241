@@ -7,9 +7,9 @@ import session_state
 
 #Connect to database
 mydb = mysql.connector.connect(
-    host="192.168.56.1",
-    #port ="2200",
-    user="scrape",
+    host="localhost",
+    #port ="3306",
+    user="root",
     password="password",
     database="fooddb"
 )
@@ -100,16 +100,16 @@ def add_user(conn, username, password, email, height, weight, age, gender):
 
     hashedPassword = pbkdf2_sha256.hash(password)
     cursor = conn.cursor()
-    cursor.execute("SELECT MAX(user_id) FROM user")
-    prevId = cursor.fetchone()[0]
-    if prevId == None:
-        prevId = 0
-    id = prevId + 1
 
-
-    cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashedPassword, email, height, weight, age, gender))
+    # Execute INSERT query to add the new user
+    cursor.execute("INSERT INTO user (username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword, email, height, weight, age, gender))
     conn.commit()
-    session_state.st.session_state.userID = id
+
+    # Retrieve the auto-generated user_id
+    new_user_id = cursor.lastrowid
+
+    # Set session state
+    session_state.st.session_state.userID = new_user_id
     session_state.st.session_state.username = username
 
     print(session_state.st.session_state.username)
