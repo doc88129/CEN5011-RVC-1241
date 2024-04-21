@@ -40,7 +40,6 @@ else:
     st.write(f'Email Address: {info[2]}')
     st.write(f'Gender: {info[7]}')
     st.write(f'Age: {info[6]}')
-    st.write(f'Height: {info[4]}')
     st.write(f'Weight: {info[5]}')
     st.write(f'Height: {heightFeet} Feet, {heightInches} Inches')
     st.write(f'Weight: {info[5]} lbs')

@@ -77,5 +77,3 @@ if __name__ == "__main__":
         showSignInPopup()
     if st.session_state.get('show_signup_popup'):
         showSignUpPopup()
-
-

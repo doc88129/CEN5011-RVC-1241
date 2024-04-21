@@ -23,6 +23,7 @@ else:
     st.title(f"Edit your Information")
 
     info = db_utils.get_user_info(st.session_state.conn, session_state.st.session_state.userID)
+    id = session_state.st.session_state.userID
     print(info)
 
     heightFeet = int(info['height'] / 12)
