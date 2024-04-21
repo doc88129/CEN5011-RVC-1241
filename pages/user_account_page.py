@@ -7,6 +7,7 @@ import streamlit as st
 from streamlit.components.v1 import html
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_extras.stateful_button import button
+from streamlit_extras.row import row
 
 #Persisting User
 import session_state
@@ -18,8 +19,15 @@ if session_state.st.session_state.username == None:
 else:
     st.title(f"{session_state.st.session_state.username}'s Profile")
 
+
+
 st.write('User Information')
 st.write(f'Email')
+# st.write(f'Gender: {}')
+# st.write(f'Age: {}')
+# st.write(f'Height: {}')
+# st.write(f'Weight: {}')
+
 
 # Display delete account button
 if not session_state.st.session_state.deleteConfirmation and st.button("Delete Account"):
@@ -28,7 +36,8 @@ if not session_state.st.session_state.deleteConfirmation and st.button("Delete A
 # Display warning and confirmation buttons if delete confirmation is True
 if session_state.st.session_state.deleteConfirmation:
     st.warning("Are you sure you want to delete your account? This action cannot be undone.")
-    if st.button("Yes, delete my account"):
+    row2 = row([2, 4], vertical_align="bottom")
+    if row2.button("Yes, delete my account"):
         print(session_state.st.session_state.userID)
         cursor = conn.cursor()
         cursor.execute("DELETE FROM user WHERE username=%s", (session_state.st.session_state.username,))
@@ -37,6 +46,6 @@ if session_state.st.session_state.deleteConfirmation:
         session_state.st.session_state.username = None
         session_state.st.session_state.deleteConfirmation = False
         switch_page("home_page")
-    elif st.button("Cancel"):
+    elif row2.button("Cancel"):
         session_state.st.session_state.deleteConfirmation = False
         switch_page("user_account_page")

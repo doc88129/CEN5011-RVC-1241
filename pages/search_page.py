@@ -30,7 +30,7 @@ def scrape_website(url):
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 
 
-st.title("Diettracker")
+st.title(f"{session_state.st.session_state.username}'s Diet Tracker")
 
 search = st.text_input("Enter a food item")
 
