@@ -29,7 +29,6 @@ else:
 
     info = retrieveUserInfo(conn)
 
-    print()
     heightFeet = int(info[4] / 12)
     heightInches = int(info[4] - (heightFeet * 12))
 
@@ -41,24 +40,26 @@ else:
     st.write(f'Height: {heightFeet} Feet, {heightInches} Inches')
     st.write(f'Weight: {info[5]} lbs')
 
+    delEdit = row([2, 4], vertical_align="bottom")
 
-# Display delete account button
-if not session_state.st.session_state.deleteConfirmation and st.button("Delete Account"):
-    session_state.st.session_state.deleteConfirmation = True
+    if delEdit.button("Edit Information"):
+        switch_page("edit_info_page")
+    if not session_state.st.session_state.deleteConfirmation and delEdit.button("Delete Account"):
+        session_state.st.session_state.deleteConfirmation = True
 
-# Display warning and confirmation buttons if delete confirmation is True
-if session_state.st.session_state.deleteConfirmation:
-    st.warning("Are you sure you want to delete your account? This action cannot be undone.")
-    options = row([2, 4], vertical_align="bottom")
-    if options.button("Yes, delete my account"):
-        print(session_state.st.session_state.userID)
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM user WHERE username=%s", (session_state.st.session_state.username,))
-        conn.commit()
-        session_state.st.session_state.userID = None
-        session_state.st.session_state.username = None
-        session_state.st.session_state.deleteConfirmation = False
-        switch_page("home_page")
-    elif options.button("Cancel"):
-        session_state.st.session_state.deleteConfirmation = False
-        switch_page("user_account_page")
+    #Warning for deleting an account
+    if session_state.st.session_state.deleteConfirmation:
+        st.warning("Are you sure you want to delete your account? This action cannot be undone.")
+        options = row([2, 4], vertical_align="bottom")
+        if options.button("Yes, delete my account"):
+            print(session_state.st.session_state.userID)
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM user WHERE username=%s", (session_state.st.session_state.username,))
+            conn.commit()
+            session_state.st.session_state.userID = None
+            session_state.st.session_state.username = None
+            session_state.st.session_state.deleteConfirmation = False
+            switch_page("home_page")
+        elif options.button("Cancel"):
+            session_state.st.session_state.deleteConfirmation = False
+            switch_page("user_account_page")
