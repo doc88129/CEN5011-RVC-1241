@@ -2,10 +2,7 @@ import numpy as np
 import pandas as pd
 import db_utils
 import streamlit as st
-<<<<<<< HEAD
 from streamlit_extras.stateful_button import button
-=======
->>>>>>> 179c78a (Added new db functions and logging food goal functionality)
 import mysql.connector
 from mysql.connector import Error
 
@@ -21,7 +18,6 @@ if conn:
     # Retrieve user information from the database
     user_info = db_utils.get_user_info(conn, session_state.st.session_state.userID)
 
-<<<<<<< HEAD
     if user_info is not None:  # Check if user_info is not None
         # Display user metrics
         st.markdown("---")
@@ -65,11 +61,6 @@ if conn:
             goal_info['target_carbs_per_day'] = st.number_input("Target Carbs per Day", value=0, step=1)
             goal_info['target_fat_per_day'] = st.number_input("Target Fat per Day", value=0, step=1)
             goal_info['end_date'] = st.date_input("End Date")
-            
-            # Use stateful_button to create toggle behavior
-            if button("Log New Food Goal", key="log_food_goal"):
-                db_utils.log_new_food_goal(conn, session_state.st.session_state.userID, goal_info)
-                st.success("New food goal logged successfully!")
 
     else:
         st.error("Failed to retrieve user information. Please try again later.")
@@ -82,8 +73,4 @@ else:
 
 # Close the database connection
 if conn:
-<<<<<<< HEAD
     conn.close()
-=======
-    conn.close()
->>>>>>> 179c78a (Added new db functions and logging food goal functionality)
