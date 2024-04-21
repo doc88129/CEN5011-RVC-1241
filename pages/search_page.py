@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 
+#Persisting User
+import session_state
 
 def scrape_website(url):
     # Send a GET request to the URL

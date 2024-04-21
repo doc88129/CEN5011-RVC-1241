@@ -2,19 +2,21 @@ import streamlit as st
 import mysql.connector
 from passlib.hash import pbkdf2_sha256
 
+#Persisting User
+import session_state
+
 #Connect to database
 mydb = mysql.connector.connect(
     host="192.168.56.1",
+    #port ="2200",
     user="scrape",
     password="password",
     database="fooddb"
 )
 
-class SessionState:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 def verifyLogin(conn, username, password):
+
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
 
@@ -103,15 +105,14 @@ def add_user(conn, username, password, email, height, weight, age, gender):
 
     cursor.execute("INSERT INTO user (user_id, username, password, email, height, weight, age, gender) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, username, hashedPassword, email, height, weight, age, gender))
     conn.commit()
-    state.userId = id
-    state.username = username
+    session_state.st.session_state.userID = id
+    session_state.st.session_state.username = username
 
-    print(state.userId)
+    print(session_state.st.session_state.username)
 
 if __name__ == "__main__":
     st.title("Calorie Scraper")
-
-    state = SessionState(userId=None, username=None)
+    session_state.init()
 
     if st.button("Login"):
         st.session_state.show_signup_popup = False
@@ -125,4 +126,5 @@ if __name__ == "__main__":
         showSignInPopup()
     if st.session_state.get('show_signup_popup'):
         showSignUpPopup()
+
 

@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from session_state import SessionState
+#Persisting User
+import session_state
 
 st.title("Welcome...")
 
@@ -26,6 +27,7 @@ if col1.button("Add Food Item to Meal"):
 if col2.button("Add New Food Goal"):
     # TODO - add page for food goal
     pass
+st.write(session_state.st.session_state.userID)
 
 st.write("\n")
 if st.button("Sign Out"):
