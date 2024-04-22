@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import mysql.connector
 from passlib.hash import pbkdf2_sha256
 import db_utils

@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import db_utils
 import streamlit as st
 from streamlit_extras.stateful_button import button
