@@ -1,6 +1,7 @@
 import streamlit as st
 import db_utils
 import time
+from streamlit_extras.row import row
 
 #Persisting User
 import session_state
@@ -8,12 +9,11 @@ import session_state
 # Connect to the database once at the start of the application
 if 'conn' not in st.session_state:
     st.session_state.conn = db_utils.connect_to_db()
-    
-
 
 def showSignInPopup():
 
     st.markdown("---")
+
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
@@ -66,11 +66,13 @@ if __name__ == "__main__":
     st.title("Calorie Scraper")
     session_state.init()
 
-    if st.button("Login"):
+    options = row([3, 1, 2], vertical_align="bottom", gap='small')
+
+    if options.button("Login"):
         st.session_state.show_signup_popup = False
         st.session_state.show_login_popup = True
 
-    if st.button("Sign Up"):
+    if options.button("Sign Up"):
         st.session_state.show_login_popup = False
         st.session_state.show_signup_popup = True
 
