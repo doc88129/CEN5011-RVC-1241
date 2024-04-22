@@ -3,6 +3,7 @@ import pandas as pd
 import db_utils
 import streamlit as st
 from streamlit_extras.stateful_button import button
+from streamlit_extras.switch_page_button import switch_page
 from streamlit_extras.row import row
 import mysql.connector
 from mysql.connector import Error
@@ -11,6 +12,14 @@ from datetime import date
 
 # Persisting User
 import session_state
+
+st.sidebar.title("Navigation")
+
+if st.sidebar.button("My Account"):
+    switch_page("user_account_page")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
+
 
 # Function to calculate target nutritional values based on user's weight and goal
 def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_days):
