@@ -12,32 +12,39 @@ from datetime import date
 # Persisting User
 import session_state
 
-# Function to calculate target nutritional values based on user's weight and goal
 def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_days):
-    # Constants based on average human metabolism and nutritional guidelines
-    CALORIES_PER_POUND = 3500  # Number of calories per pound of body weight
-    PROTEIN_RATIO = 0.15  # Percentage of total daily calories from protein
-    CARBS_RATIO = 0.5  # Percentage of total daily calories from carbohydrates
-    FAT_RATIO = 0.35  # Percentage of total daily calories from fat
+    # Check if goal_duration_days is provided and greater than zero
+    if not goal_duration_days or goal_duration_days < 0:
+        raise ValueError("Goal duration must be provided and greater than zero.")
     
-    # Calculate target calories based on the goal type (e.g., weight loss, weight gain, maintenance)
-    if goal_type == "Weight Loss":
-        target_calories_per_day = weight * CALORIES_PER_POUND * 0.8  # Aim for a calorie deficit
-    elif goal_type == "Weight Gain":
-        # Adjust the target calories based on the desired rate of gain and goal duration
-        DESIRED_RATE_OF_GAIN_PER_WEEK = 1.0  # Adjust this value based on the desired rate of gain per week
-        total_calories_needed = (target_weight - weight) * CALORIES_PER_POUND
-        total_days = goal_duration_days
-        target_calories_per_day = total_calories_needed / total_days  # Aim for a calorie surplus
-    else:
-        target_calories_per_day = weight * CALORIES_PER_POUND  # Maintain current weight
+    # Constants based on scientific research for macronutrient ratios
+    PROTEIN_RATIO = 0.25  # Percentage of total daily calories from protein
+    CARBS_RATIO = 0.45  # Percentage of total daily calories from carbohydrates
+    FAT_RATIO = 0.30  # Percentage of total daily calories from fat
     
-    # Calculate target protein, carbs, and fat based on the user's weight and target weight
-    target_protein_per_day = target_weight * PROTEIN_RATIO
-    target_carbs_per_day = target_weight * CARBS_RATIO
-    target_fat_per_day = target_weight * FAT_RATIO
-    
-    return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
+    try:
+        # Calculate daily calorie change based on the goal type
+        if goal_type == "Weight Loss":
+            daily_calorie_change = (weight - target_weight) / goal_duration_days
+        elif goal_type == "Weight Gain":
+            daily_calorie_change = (target_weight - weight) / goal_duration_days
+        else:
+            daily_calorie_change = 0  # No change in calories for weight maintenance
+        
+        # Calculate target calories per day based on the calculated daily calorie change
+        target_calories_per_day = weight * 14  # Example formula to calculate target calories
+        target_calories_per_day += daily_calorie_change
+        
+        # Calculate target protein, carbs, and fat based on macronutrient ratios
+        target_protein_per_day = target_calories_per_day * PROTEIN_RATIO / 4  # Protein has 4 calories per gram
+        target_carbs_per_day = target_calories_per_day * CARBS_RATIO / 4  # Carbs have 4 calories per gram
+        target_fat_per_day = target_calories_per_day * FAT_RATIO / 9  # Fat has 9 calories per gram
+        
+        return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
+    except ZeroDivisionError:
+        raise ValueError("Goal duration cannot be zero.")
+
+
 
 st.title(f"Welcome to {session_state.st.session_state.username}'s Diet Tracker")
 
