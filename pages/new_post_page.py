@@ -19,7 +19,7 @@ st.title("Create New Post")
 
 postUser = session_state.st.session_state.username
 postTitle = st.text_input("Post Title")
-postContent = st.text_input("Post Description")
+postContent = st.text_area("Post Description")
 
 options = row([9, 2], vertical_align="bottom")
 if options.button("Cancel"):
