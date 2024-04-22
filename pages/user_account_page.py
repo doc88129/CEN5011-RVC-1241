@@ -26,8 +26,12 @@ conn = db_utils.connect_to_db()
 
 st.sidebar.title("Navigation")
 
+if st.sidebar.button("My Account"):
+    switch_page("user_account_page")
 if st.sidebar.button("My Tracks"):
     switch_page("user_main_page")
+if st.sidebar.button("Meal Log"):
+    switch_page("meal_log")
 if st.sidebar.button("Message Board"):
     switch_page("message_board_page")
 
@@ -35,6 +39,7 @@ if session_state.st.session_state.username == None:
     st.title(f"Please Sign in/ up to access your profile")
 else:
     st.title(f"{session_state.st.session_state.username}'s Profile")
+    st.markdown("---")
 
     info = retrieveUserInfo(conn)
 

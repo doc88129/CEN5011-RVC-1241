@@ -10,13 +10,16 @@ import session_state
 st.title("Meal Log")
 
 st.sidebar.title("Navigation")
+st.markdown("---")
 
 if st.sidebar.button("My Account"):
     switch_page("user_account_page")
-if st.sidebar.button("Message Board"):
-    switch_page("message_board_page")
+if st.sidebar.button("My Tracks"):
+    switch_page("user_main_page")
 if st.sidebar.button("Meal Log"):
     switch_page("meal_log")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
     
 # Check database connection
 if st.session_state.conn:
