@@ -152,11 +152,6 @@ if st.session_state.conn:
                 # Refresh the page to reflect the updated goals
                 st.experimental_rerun()
             st.markdown("---")
-
-        st.write("\n")
-        if st.button("Sign Out"):
-            st.session_state.clear()
-            st.switch_page("home_page.py")
     else:
         st.error("Failed to retrieve user information. Please try again later.")
 else:
@@ -167,6 +162,7 @@ user_meal_data = db_utils.get_user_historical_data(st.session_state.conn, st.ses
 st.markdown("---")
 
 # Check if the user has food goals and meal log data to calculate target achievement
+st.markdown("---")
 if user_food_goals and user_meal_data:
     st.subheader("Target Achievement")
 
@@ -198,38 +194,22 @@ if user_food_goals and user_meal_data:
             protein_diff = goal_for_date['target_protein_per_day'] - total_protein
             carbs_diff = goal_for_date['target_carbs_per_day'] - total_carbs
             fat_diff = goal_for_date['target_fat_per_day'] - total_fat
-            
-            # Display target achievement information
-            st.write(f"Total Consumed Calories: {total_calories} / Target Calories: {goal_for_date['target_calories_per_day']}")
-            if calories_diff > 0:
-                st.write(f"Need {calories_diff} more calories to meet target.")
-            elif calories_diff < 0:
-                st.write(f"Exceeded target by {-calories_diff} calories.")
-            else:
-                st.write("Target calories met.")
-                
-            st.write(f"Total Consumed Protein: {total_protein} / Target Protein: {goal_for_date['target_protein_per_day']} grams")
-            if protein_diff > 0:
-                st.write(f"Need {protein_diff} more grams of protein to meet target.")
-            elif protein_diff < 0:
-                st.write(f"Exceeded target protein by {-protein_diff} grams.")
-            else:
-                st.write("Target protein met.")
-                
-            st.write(f"Total Consumed Carbs: {total_carbs} / Target Carbs: {goal_for_date['target_carbs_per_day']} grams")
-            if carbs_diff > 0:
-                st.write(f"Need {carbs_diff} more grams of carbs to meet target.")
-            elif carbs_diff < 0:
-                st.write(f"Exceeded target carbs by {-carbs_diff} grams.")
-            else:
-                st.write("Target carbs met.")
-                
-            st.write(f"Total Consumed Fat: {total_fat} / Target Fat: {goal_for_date['target_fat_per_day']} grams")
-            if fat_diff > 0:
-                st.write(f"Need {fat_diff} more grams of fat to meet target.")
-            elif fat_diff < 0:
-                st.write(f"Exceeded target fat by {-fat_diff} grams.")
-            else:
-                st.write("Target fat met.")
+
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric('Total Calories', int(total_calories), -int(calories_diff), "inverse")
+            col2.metric('Total Protein', int(total_protein), int(protein_diff), "normal")
+            col3.metric('Total Carbs', int(total_carbs), -int(carbs_diff), "inverse")
+            col4.metric('Total Fat', int(total_fat), -int(fat_diff), "inverse")
+
+            col1, col2, col3, col4 = st.columns(4)
+            col1.write(f"Target: {goal_for_date['target_calories_per_day']}")
+            col2.write(f"Target: {goal_for_date['target_protein_per_day']}")
+            col3.write(f"Target: {goal_for_date['target_carbs_per_day']}")
+            col4.write(f"Target: {goal_for_date['target_fat_per_day']}")
         else:
             st.warning("No food goal set for this date.")
+
+st.write("\n")
+if st.button("Sign Out"):
+    st.session_state.clear()
+    st.switch_page("home_page.py")
