@@ -1,11 +1,23 @@
+import numpy as np
+import pandas as pd
 import db_utils
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
 
 # Persisting User
 import session_state
 
 st.title("Meal Log")
 
+st.sidebar.title("Navigation")
+
+if st.sidebar.button("My Account"):
+    switch_page("user_account_page")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
+if st.sidebar.button("Meal Log"):
+    switch_page("meal_log")
+    
 # Check database connection
 if st.session_state.conn:
     # Retrieve user information from the database
@@ -20,20 +32,15 @@ if st.session_state.conn:
             st.subheader("Meal Log")
             # Convert meal data to DataFrame
             meal_df = pd.DataFrame(user_meal_data)
-            # Group meals by date
+            # Group meal data by date
             meals_by_date = meal_df.groupby('date_consumed')
-            # Iterate over each date
+            # Display meal data organized by date
             for date, meals in meals_by_date:
                 st.write(f"Date: {date}")
-                # Display meals for the date
-                for index, meal in meals.iterrows():
-                    st.write(f"Meal Name: {meal['meal_name']}")
-                    st.write(f"Meal Type: {meal['meal_type']}")
-                    st.write(f"Calories: {meal['calories']}")
-                    st.write(f"Protein: {meal['protein']} grams")
-                    st.write(f"Carbs: {meal['carbs']} grams")
-                    st.write(f"Fat: {meal['fat']} grams")
-                    st.write('---')
+                # Exclude 'meal_id' column
+                meals_without_id = meals.drop(columns=['meal_id'])
+                st.table(meals_without_id)
+                st.write('---')
         else:
             st.write("No meal data found.")
 

@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 import db_utils
 import streamlit as st
 from streamlit_extras.stateful_button import button
@@ -16,6 +18,8 @@ if st.sidebar.button("My Account"):
     switch_page("user_account_page")
 if st.sidebar.button("Message Board"):
     switch_page("message_board_page")
+if st.sidebar.button("Meal Log"):
+    switch_page("meal_log")
 
 
 # Function to calculate target nutritional values based on user's weight and goal
@@ -159,4 +163,3 @@ if st.session_state.conn:
         st.error("Failed to retrieve user information. Please try again later.")
 else:
     st.error("Failed to connect to the database. Please try again later.")
-
