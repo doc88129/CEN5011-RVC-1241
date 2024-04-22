@@ -19,6 +19,7 @@ if session_state.st.session_state.username == None:
     st.title(f"Please Sign in/ up to access your profile")
 else:
     st.title(f"Edit your Information")
+    st.markdown("---")
 
     info = db_utils.get_user_info(st.session_state.conn, session_state.st.session_state.userID)
     id = session_state.st.session_state.userID

@@ -41,6 +41,7 @@ def scrape_website(url):
 
 
 st.title(f"{session_state.st.session_state.username}'s Diet Tracker")
+st.markdown("---")
 
 search = st.text_input("Enter a food item")
 if st.button("Return"):

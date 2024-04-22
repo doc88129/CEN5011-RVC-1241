@@ -14,6 +14,7 @@ if 'conn' not in st.session_state:
     st.session_state.conn = db_utils.connect_to_db()
 
 st.title("Create New Post")
+st.markdown("---")
 
 postUser = session_state.st.session_state.username
 postTitle = st.text_input("Post Title")

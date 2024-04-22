@@ -109,7 +109,7 @@ if st.session_state.conn:
 
         if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
-            
+
         # Check if the user already has a food goal
         existing_goal = bool(user_food_goals)
         
@@ -163,6 +163,8 @@ else:
     st.error("Failed to connect to the database. Please try again later.")
 
 user_meal_data = db_utils.get_user_historical_data(st.session_state.conn, st.session_state.userID)
+
+st.markdown("---")
 
 # Check if the user has food goals and meal log data to calculate target achievement
 if user_food_goals and user_meal_data:
