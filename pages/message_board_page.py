@@ -44,6 +44,7 @@ def gatherMessages():
         st.write(messageContent)
 
 header = row([12, 2], vertical_align="bottom")
+st.markdown("---")
 header.title("User Posts")
 if header.button("New Post"):
     if session_state.st.session_state.username == None:

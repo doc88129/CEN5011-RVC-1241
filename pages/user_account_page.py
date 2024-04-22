@@ -39,6 +39,7 @@ if session_state.st.session_state.username == None:
     st.title(f"Please Sign in/ up to access your profile")
 else:
     st.title(f"{session_state.st.session_state.username}'s Profile")
+    st.markdown("---")
 
     info = retrieveUserInfo(conn)
 

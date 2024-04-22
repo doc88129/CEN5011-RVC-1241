@@ -10,6 +10,7 @@ import session_state
 st.title("Meal Log")
 
 st.sidebar.title("Navigation")
+st.markdown("---")
 
 if st.sidebar.button("My Account"):
     switch_page("user_account_page")
