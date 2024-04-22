@@ -6,12 +6,14 @@ from streamlit_extras.stateful_button import button
 from streamlit_extras.row import row
 import mysql.connector
 from mysql.connector import Error
+from datetime import date
+
 
 # Persisting User
 import session_state
 
 # Function to calculate target nutritional values based on user's weight and goal
-def calculate_target_nutrition(weight, target_weight, goal_type):
+def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_days):
     # Constants based on average human metabolism and nutritional guidelines
     CALORIES_PER_POUND = 3500  # Number of calories per pound of body weight
     PROTEIN_RATIO = 0.15  # Percentage of total daily calories from protein
@@ -22,7 +24,11 @@ def calculate_target_nutrition(weight, target_weight, goal_type):
     if goal_type == "Weight Loss":
         target_calories_per_day = weight * CALORIES_PER_POUND * 0.8  # Aim for a calorie deficit
     elif goal_type == "Weight Gain":
-        target_calories_per_day = weight * CALORIES_PER_POUND * 1.2  # Aim for a calorie surplus
+        # Adjust the target calories based on the desired rate of gain and goal duration
+        DESIRED_RATE_OF_GAIN_PER_WEEK = 1.0  # Adjust this value based on the desired rate of gain per week
+        total_calories_needed = (target_weight - weight) * CALORIES_PER_POUND
+        total_days = goal_duration_days
+        target_calories_per_day = total_calories_needed / total_days  # Aim for a calorie surplus
     else:
         target_calories_per_day = weight * CALORIES_PER_POUND  # Maintain current weight
     
@@ -82,8 +88,12 @@ if st.session_state.conn:
 
         if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
-        # Add new food goal section
-        if not st.session_state.open:
+            
+        # Check if the user already has a food goal
+        existing_goal = bool(user_food_goals)
+        
+        # Add new food goal section only if the user doesn't have an existing goal
+        if not st.session_state.open and not existing_goal:
             if options.button("Add New Food Goal", key="button2"):
                 st.session_state.open = True
 
@@ -92,11 +102,17 @@ if st.session_state.conn:
             goal_info = {}  # Example goal information, you can change this
             goal_info['goal_type'] = st.selectbox("Goal Type", ["Weight Loss", "Weight Gain", "Maintenance"])
             goal_info['target_weight'] = st.number_input("Target Weight", value=0.0, step=0.1)
-
-            # Calculate target nutritional values based on the user's weight and goal
+            goal_info['start_date'] = date.today()  # Set start date to the current date
+            goal_info['end_date'] = st.date_input("End Date")
+            
+            # Calculate target nutritional values based on the user's weight, target weight, goal type, and duration
             target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day = calculate_target_nutrition(
-                float(user_info['weight']), goal_info['target_weight'], goal_info['goal_type']
-            )
+                float(user_info['weight']),
+                goal_info['target_weight'],
+                goal_info['goal_type'],
+                (goal_info['end_date'] - goal_info['start_date']).days  # Calculate the duration of the goal in days
+)
+
 
             # Populate the target nutritional values fields
             goal_info['target_calories_per_day'] = target_calories_per_day
@@ -104,7 +120,7 @@ if st.session_state.conn:
             goal_info['target_carbs_per_day'] = target_carbs_per_day
             goal_info['target_fat_per_day'] = target_fat_per_day
 
-            goal_info['end_date'] = st.date_input("End Date")
+           
 
             st.write("\n")
             options = row([4, 4], vertical_align="bottom")
@@ -127,3 +143,4 @@ if st.session_state.conn:
         st.error("Failed to retrieve user information. Please try again later.")
 else:
     st.error("Failed to connect to the database. Please try again later.")
+
