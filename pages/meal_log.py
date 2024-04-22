@@ -35,6 +35,8 @@ if st.session_state.conn:
             st.subheader("Meal Log")
             # Convert meal data to DataFrame
             meal_df = pd.DataFrame(user_meal_data)
+            # Remove 'meal_type' column
+            meal_df.drop(columns=['meal_type'], inplace=True)
             # Group meal data by date
             meals_by_date = meal_df.groupby('date_consumed')
             # Display meal data organized by date
@@ -42,6 +44,12 @@ if st.session_state.conn:
                 st.write(f"Date: {date}")
                 # Exclude 'meal_id' column
                 meals_without_id = meals.drop(columns=['meal_id'])
+                # Calculate total consumption for the day
+                total_consumption = meals_without_id.sum(axis=0) 
+                # Add total consumption row to the DataFrame
+                meals_without_id.loc['Total'] = total_consumption
+                meals_without_id.loc['Total', 'meal_name'] = '-'
+                meals_without_id.loc['Total', 'date_consumed'] = '-'
                 st.table(meals_without_id)
                 st.write('---')
         else:
