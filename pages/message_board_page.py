@@ -21,6 +21,8 @@ if st.sidebar.button("My Tracks"):
     switch_page("user_main_page")
 if st.sidebar.button("Meal Log"):
     switch_page("meal_log")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
 
 def gatherMessages():
 

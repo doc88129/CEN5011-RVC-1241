@@ -26,6 +26,8 @@ conn = db_utils.connect_to_db()
 
 st.sidebar.title("Navigation")
 
+if st.sidebar.button("My Account"):
+    switch_page("user_account_page")
 if st.sidebar.button("My Tracks"):
     switch_page("user_main_page")
 if st.sidebar.button("Meal Log"):

@@ -16,10 +16,12 @@ st.sidebar.title("Navigation")
 
 if st.sidebar.button("My Account"):
     switch_page("user_account_page")
-if st.sidebar.button("Message Board"):
-    switch_page("message_board_page")
+if st.sidebar.button("My Tracks"):
+    switch_page("user_main_page")
 if st.sidebar.button("Meal Log"):
     switch_page("meal_log")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
 
 #Function to calculate target nutritional values based on user's weight and goal
 def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_days):
