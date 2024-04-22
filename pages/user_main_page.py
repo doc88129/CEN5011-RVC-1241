@@ -61,11 +61,11 @@ def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_d
 st.title(f"Welcome to {session_state.st.session_state.username}'s Diet Tracker")
 
 if st.session_state.conn:
-    #Retrieve user information from the database
+    # Retrieve user information from the database
     user_info = db_utils.get_user_info(st.session_state.conn, st.session_state.userID)
 
     if user_info is not None:  # Check if user_info is not None
-        #Display user metrics
+        # Display user metrics
         st.markdown("---")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Height (in)", int(user_info['height']))
@@ -73,7 +73,7 @@ if st.session_state.conn:
         col3.metric("Age", int(user_info['age']))
         col4.metric("Gender", user_info['gender'])
 
-        #Display user food goals
+        # Display user food goals
         st.write("\n")
         st.markdown("---")
         st.subheader("Food Goals")
@@ -98,8 +98,7 @@ if st.session_state.conn:
                 if st.button(f"Delete Goal {i}", key=f"delete_goal_{goal_id}"):
                     db_utils.delete_user_food_goal(st.session_state.conn, st.session_state.userID, goal_id)
                     st.success("Goal deleted successfully!")
-
-                    #Refresh the page to reflect the updated goals
+                    # Refresh the page to reflect the updated goals
                     st.experimental_rerun()
         else:
             st.write("No food goals found for the user.")
@@ -109,49 +108,46 @@ if st.session_state.conn:
         if options.button("Add Food Item to Meal", key="button1"):
             st.switch_page("pages/search_page.py")
             
-        #Check if the user already has a food goal
+        # Check if the user already has a food goal
         existing_goal = bool(user_food_goals)
         
-        #Add new food goal section only if the user doesn't have an existing goal
+        # Add new food goal section only if the user doesn't have an existing goal
         if not st.session_state.open and not existing_goal:
             if options.button("Add New Food Goal", key="button2"):
                 st.session_state.open = True
 
         if st.session_state.open:
             st.subheader("New Food Goal")
-            goal_info = {}  #Example goal information, you can change this
+            goal_info = {}  # Example goal information, you can change this
             goal_info['goal_type'] = st.selectbox("Goal Type", ["Weight Loss", "Weight Gain", "Maintenance"])
             goal_info['target_weight'] = st.number_input("Target Weight", value=0.0, step=0.1)
             goal_info['start_date'] = date.today()  # Set start date to the current date
             goal_info['end_date'] = st.date_input("End Date", value=date.today()+timedelta(days=1), format="MM/DD/YYYY")
             
-            #Calculate target nutritional values based on the user's weight, target weight, goal type, and duration
+            # Calculate target nutritional values based on the user's weight, target weight, goal type, and duration
             target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day = calculate_target_nutrition(
                 float(user_info['weight']),
                 goal_info['target_weight'],
                 goal_info['goal_type'],
                 (goal_info['end_date'] - goal_info['start_date']).days  # Calculate the duration of the goal in days
-)
+            )
 
-
-            #Populate the target nutritional values fields
+            # Populate the target nutritional values fields
             goal_info['target_calories_per_day'] = target_calories_per_day
             goal_info['target_protein_per_day'] = target_protein_per_day
             goal_info['target_carbs_per_day'] = target_carbs_per_day
             goal_info['target_fat_per_day'] = target_fat_per_day
-
-           
 
             st.write("\n")
             options = row([4, 4], vertical_align="bottom")
             if options.button("Apply", key="button3"):
                 db_utils.log_new_food_goal(st.session_state.conn, st.session_state.userID, goal_info)
                 st.session_state.open = False
-                #Refresh the page to reflect the updated goals
+                # Refresh the page to reflect the updated goals
                 st.experimental_rerun()
             if options.button("Cancel", key="button4"):
                 st.session_state.open = False
-                #Refresh the page to reflect the updated goals
+                # Refresh the page to reflect the updated goals
                 st.experimental_rerun()
             st.markdown("---")
 
@@ -163,3 +159,73 @@ if st.session_state.conn:
         st.error("Failed to retrieve user information. Please try again later.")
 else:
     st.error("Failed to connect to the database. Please try again later.")
+
+user_meal_data = db_utils.get_user_historical_data(st.session_state.conn, st.session_state.userID)
+
+# Check if the user has food goals and meal log data to calculate target achievement
+if user_food_goals and user_meal_data:
+    st.subheader("Target Achievement")
+
+    # Convert meal data to DataFrame
+    meal_df = pd.DataFrame(user_meal_data)
+    # Group meals by date
+    meals_by_date = meal_df.groupby('date_consumed')
+    
+    for date, meals in meals_by_date:
+        st.write(f"Date: {date}")
+        # Calculate total consumed calories, protein, carbs, and fat for the day
+        total_calories = meals['calories'].sum()
+        total_protein = meals['protein'].sum()
+        total_carbs = meals['carbs'].sum()
+        total_fat = meals['fat'].sum()
+        
+        # Find the corresponding food goal for the date
+        goal_for_date = None
+        for goal in user_food_goals:
+            goal_start = goal['start_date']
+            goal_end = goal['end_date']
+            if goal_start <= date <= goal_end:
+                goal_for_date = goal
+                break
+        
+        if goal_for_date:
+            # Compare total consumed values with target values
+            calories_diff = goal_for_date['target_calories_per_day'] - total_calories
+            protein_diff = goal_for_date['target_protein_per_day'] - total_protein
+            carbs_diff = goal_for_date['target_carbs_per_day'] - total_carbs
+            fat_diff = goal_for_date['target_fat_per_day'] - total_fat
+            
+            # Display target achievement information
+            st.write(f"Total Consumed Calories: {total_calories} / Target Calories: {goal_for_date['target_calories_per_day']}")
+            if calories_diff > 0:
+                st.write(f"Need {calories_diff} more calories to meet target.")
+            elif calories_diff < 0:
+                st.write(f"Exceeded target by {-calories_diff} calories.")
+            else:
+                st.write("Target calories met.")
+                
+            st.write(f"Total Consumed Protein: {total_protein} / Target Protein: {goal_for_date['target_protein_per_day']} grams")
+            if protein_diff > 0:
+                st.write(f"Need {protein_diff} more grams of protein to meet target.")
+            elif protein_diff < 0:
+                st.write(f"Exceeded target protein by {-protein_diff} grams.")
+            else:
+                st.write("Target protein met.")
+                
+            st.write(f"Total Consumed Carbs: {total_carbs} / Target Carbs: {goal_for_date['target_carbs_per_day']} grams")
+            if carbs_diff > 0:
+                st.write(f"Need {carbs_diff} more grams of carbs to meet target.")
+            elif carbs_diff < 0:
+                st.write(f"Exceeded target carbs by {-carbs_diff} grams.")
+            else:
+                st.write("Target carbs met.")
+                
+            st.write(f"Total Consumed Fat: {total_fat} / Target Fat: {goal_for_date['target_fat_per_day']} grams")
+            if fat_diff > 0:
+                st.write(f"Need {fat_diff} more grams of fat to meet target.")
+            elif fat_diff < 0:
+                st.write(f"Exceeded target fat by {-fat_diff} grams.")
+            else:
+                st.write("Target fat met.")
+        else:
+            st.warning("No food goal set for this date.")
