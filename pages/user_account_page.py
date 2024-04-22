@@ -21,9 +21,15 @@ def retrieveUserInfo(conn):
     cursor.execute("SELECT * FROM user WHERE user_id=%s", (id,))
     row = cursor.fetchone()
     return row
+
 conn = db_utils.connect_to_db()
 
+st.sidebar.title("Navigation")
 
+if st.sidebar.button("My Tracks"):
+    switch_page("user_main_page")
+if st.sidebar.button("Message Board"):
+    switch_page("message_board_page")
 
 if session_state.st.session_state.username == None:
     st.title(f"Please Sign in/ up to access your profile")
