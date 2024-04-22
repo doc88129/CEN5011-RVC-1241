@@ -7,8 +7,7 @@ from streamlit_extras.switch_page_button import switch_page
 from streamlit_extras.row import row
 import mysql.connector
 from mysql.connector import Error
-from datetime import date
-
+from datetime import date, timedelta
 
 # Persisting User
 import session_state
@@ -25,7 +24,8 @@ if st.sidebar.button("Message Board"):
 def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_days):
     # Check if goal_duration_days is provided and greater than zero
     if not goal_duration_days or goal_duration_days < 0:
-        raise ValueError("Goal duration must be provided and greater than zero.")
+        st.error("Goal duration must be provided and greater than zero.")
+        st.stop()
     
     # Constants based on scientific research for macronutrient ratios
     PROTEIN_RATIO = 0.25  # Percentage of total daily calories from protein
@@ -52,7 +52,8 @@ def calculate_target_nutrition(weight, target_weight, goal_type, goal_duration_d
         
         return target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day
     except ZeroDivisionError:
-        raise ValueError("Goal duration cannot be zero.")
+        st.error("Goal duration must be provided and greater than zero.")
+        st.stop()
 
 
 
@@ -120,7 +121,7 @@ if st.session_state.conn:
             goal_info['goal_type'] = st.selectbox("Goal Type", ["Weight Loss", "Weight Gain", "Maintenance"])
             goal_info['target_weight'] = st.number_input("Target Weight", value=0.0, step=0.1)
             goal_info['start_date'] = date.today()  # Set start date to the current date
-            goal_info['end_date'] = st.date_input("End Date")
+            goal_info['end_date'] = st.date_input("End Date", value=date.today()+timedelta(days=1), format="MM/DD/YYYY")
             
             # Calculate target nutritional values based on the user's weight, target weight, goal type, and duration
             target_calories_per_day, target_protein_per_day, target_carbs_per_day, target_fat_per_day = calculate_target_nutrition(
