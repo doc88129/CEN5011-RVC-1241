@@ -13,10 +13,10 @@ st.sidebar.title("Navigation")
 
 if st.sidebar.button("My Account"):
     switch_page("user_account_page")
+if st.sidebar.button("My Tracks"):
+    switch_page("user_main_page")
 if st.sidebar.button("Message Board"):
     switch_page("message_board_page")
-if st.sidebar.button("Meal Log"):
-    switch_page("meal_log")
     
 # Check database connection
 if st.session_state.conn:
