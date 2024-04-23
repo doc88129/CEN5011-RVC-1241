@@ -1,0 +1,21 @@
+In order to run the application, you will need a MYSQL-8.0.36 server as well as MYSQL workbench
+
+Server Download link: https://dev.mysql.com/downloads/windows/installer/8.0.html
+
+Once you have the installer, run it and follow these steps
+  Accept all standard requests until reaching a page named "Type and Networking"
+  Here, ensure the config type is development computer and TCP/IP is selected with port 3306 and x Protocol Port 33060
+  Everything leave as is, hit next
+  Use default authentication method
+  For user, name the user root and make the password "password"
+  Keep accepting default suggestions and finally hit execute
+  Server should be installed
+
+MYSQL Workbench Download Link: https://dev.mysql.com/downloads/workbench/
+
+Once you have the installer, go through all steps using default values
+Once installed, open up MYSQL Workbench and click the + sign next to MySQL connections
+  Name the connection localhost, add the username "root" and press "Store in Vault" to enter the password, which was "password"
+  Now you should be connected to your server
+  Now press server --> Data Import --> Import from Dump Project Folder, then select the path in which you have our database files downloaded
+  Once selected, press start import, adding our database to your server
